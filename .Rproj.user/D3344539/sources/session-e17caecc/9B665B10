@@ -3,7 +3,7 @@
     "path": "~/GitHub/Trinity_Williford/index.qmd",
     "project_path": "index.qmd",
     "type": "quarto_markdown",
-    "hash": "0",
+    "hash": "2022646170",
     "contents": "",
     "dirty": false,
     "created": 1752853949314.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "4,25",
+        "cursorPosition": "2,3",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1752853525,
+    "lastKnownWriteTime": 1752855495,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1752853525,
+    "last_content_update": 1752855495306,
     "read_only": false,
     "read_only_alternatives": []
 }
