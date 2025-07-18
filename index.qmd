@@ -12,3 +12,12 @@ about:
     - text: trinity-williford@ouhsc.edu
       href: link
 ---
+::: {.column-page}
+
+## Bio
+
+## Research Goals
+
+## Experience
+
+:::
