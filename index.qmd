@@ -1,7 +1,14 @@
 ---
 title: "Trinity_Williford"
 ---
-
-This is a Quarto website.
-
-To learn more about Quarto websites visit <https://quarto.org/docs/websites>.
+---
+title: "Trinity Williford"
+toc: true
+about:
+  template: trestles
+  links:
+    - text: GitHub
+      href: link
+    - text: trinity-williford@ouhsc.edu
+      href: link
+---
