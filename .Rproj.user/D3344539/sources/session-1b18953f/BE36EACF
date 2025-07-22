@@ -3,7 +3,7 @@
     "path": "~/GitHub/Trinity_Williford/_quarto.yml",
     "project_path": "_quarto.yml",
     "type": "yaml",
-    "hash": "3845772742",
+    "hash": "2573492190",
     "contents": "",
     "dirty": false,
     "created": 1752853863826.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "11,0",
+        "cursorPosition": "10,22",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1753207947,
+    "lastKnownWriteTime": 1753208752,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1753207947182,
+    "last_content_update": 1753208752041,
     "read_only": false,
     "read_only_alternatives": []
 }
