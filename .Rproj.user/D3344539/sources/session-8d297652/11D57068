@@ -3,7 +3,7 @@
     "path": "~/GitHub/Trinity_Williford/styles.scss",
     "project_path": "styles.scss",
     "type": "css",
-    "hash": "1540073614",
+    "hash": "2495340436",
     "contents": "",
     "dirty": false,
     "created": 1752853952220.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "27,34",
-        "scrollLine": "9"
+        "cursorPosition": "20,53",
+        "scrollLine": "2"
     },
     "folds": "",
-    "lastKnownWriteTime": 1753571702,
+    "lastKnownWriteTime": 1753571867,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1753571702309,
+    "last_content_update": 1753571867347,
     "read_only": false,
     "read_only_alternatives": []
 }
