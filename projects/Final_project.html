@@ -147,8 +147,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#bulk-rnaseq-of-microglia-phenotypes-across-ages" id="toc-bulk-rnaseq-of-microglia-phenotypes-across-ages" class="nav-link active" data-scroll-target="#bulk-rnaseq-of-microglia-phenotypes-across-ages">Bulk-RNAseq of Microglia Phenotypes Across Ages</a></li>
-  <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a>
+  <li><a href="#microglia-homeostatic-intermediate-and-disease-associated" id="toc-microglia-homeostatic-intermediate-and-disease-associated" class="nav-link active" data-scroll-target="#microglia-homeostatic-intermediate-and-disease-associated">Microglia: Homeostatic, Intermediate, and Disease Associated</a></li>
+  <li><a href="#bulk-rnaseq-of-microglia-phenotypes-across-ages" id="toc-bulk-rnaseq-of-microglia-phenotypes-across-ages" class="nav-link" data-scroll-target="#bulk-rnaseq-of-microglia-phenotypes-across-ages">Bulk-RNAseq of Microglia Phenotypes Across Ages</a>
   <ul class="collapse">
   <li><a href="#installing-packages" id="toc-installing-packages" class="nav-link" data-scroll-target="#installing-packages">Installing Packages</a></li>
   <li><a href="#tidy-data" id="toc-tidy-data" class="nav-link" data-scroll-target="#tidy-data">Tidy Data</a></li>
@@ -180,13 +180,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="bulk-rnaseq-of-microglia-phenotypes-across-ages" class="level2">
-<h2 class="anchored" data-anchor-id="bulk-rnaseq-of-microglia-phenotypes-across-ages">Bulk-RNAseq of Microglia Phenotypes Across Ages</h2>
-<p>Here, I am analyzing Bulk-RNAseq data that describes four different conditions. Of the four different conditions, we have eight samples of Young Homeostatic Microglia. Our other conditions are Old Microglia, but are three types: Homeostatic, Transition (Intermediate), and Disease Associated Microglia (DAMs).</p>
+<section id="microglia-homeostatic-intermediate-and-disease-associated" class="level2">
+<h2 class="anchored" data-anchor-id="microglia-homeostatic-intermediate-and-disease-associated">Microglia: Homeostatic, Intermediate, and Disease Associated</h2>
+<p>Aging and neurodegenerative diseases, such as Alzheimer’s Disease (AD), are associated with chronic, sterile inflammation (inflammaging). Microglia, the resident CNS immune cell, responds to insults by altering their phenotype and thus increasing their phagocytic and signaling capacities. However, it is unclear how this reactivity affects aging or AD pathogenesis. The prevailing view is that microgliosis protects against damage, but during aging and AD neuropathology, chronic microglial hyperactivation may promote inflammation and disease.</p>
+<p>In our studies, we have identified three types of microglia: homeostatic, intermediate, and disease-associated (DAMs). Homeostatic microglia are considered to maintain a healthy environment while DAMs are inflammatory. During aging, the proportion of DAMs relative to homeostatic and intermediate microglia changes. Here, we explore the genetic components that may contribute to these changes.</p>
 <p><img src="images/clipboard-173104672.png" class="img-fluid"></p>
 </section>
-<section id="code" class="level2">
-<h2 class="anchored" data-anchor-id="code">Code</h2>
+<section id="bulk-rnaseq-of-microglia-phenotypes-across-ages" class="level2">
+<h2 class="anchored" data-anchor-id="bulk-rnaseq-of-microglia-phenotypes-across-ages">Bulk-RNAseq of Microglia Phenotypes Across Ages</h2>
+<p>Here, I am analyzing Bulk-RNAseq data that describes four different conditions: Young Homeostatic, Old Homeostatic, Old Transition (Intermediate), and Old DAMs.</p>
 <section id="installing-packages" class="level3">
 <h3 class="anchored" data-anchor-id="installing-packages">Installing Packages</h3>
 <p>We begin by installing the necessary packages needed for our data analysis.</p>
@@ -449,7 +451,7 @@ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 </section>
 <section id="tidy-data" class="level3">
 <h3 class="anchored" data-anchor-id="tidy-data">Tidy Data</h3>
-<p>After importing my data file, I needed to filter and tidy the data to contain the protein coding RNA segments. I also needed to remove the normalized counts since DESeq works solely with raw counts. On top of this, my descriptions in my csv did not contain any conditions that match my sample. DESeq compares samples based on conditions (not sample name), so I had to create a new data.frame to make my comparisons.</p>
+<p>After importing my data file, I needed to filter and tidy the data to contain the protein coding RNA segments. I also needed to remove the normalized counts since DESeq works solely with raw counts. On top of this, my descriptions (second image) in my csv did not contain any conditions (based on age and microglia state) that match my sample. DESeq compares samples based on conditions (not sample name), so I had to create a new data.frame to make my comparisons.</p>
 <p><img src="images/Screenshot 2025-07-26 215608.png" class="img-fluid"></p>
 <p><img src="images/Screenshot 2025-07-26 215721.png" class="img-fluid"></p>
 <div class="cell">
@@ -501,7 +503,7 @@ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 <span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), sum), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
 <span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">column_to_rownames</span>(<span class="at">var =</span> <span class="st">"Gene Symbol"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Here is a continuation of tidying my description code. Quick recap of my code, I elongated my data.frame (filtered_dam_raw) so that my sample names would become rows instead of columns. Once I had this, I needed to remove the Gene Symbols and Counts so that DESeq would not get confused. Below, I am adding the conditions for each sample so that my comparisons across cell types can be made.</p>
+<p>Here is a continuation of tidying dr_description. For recap, I elongated filtered_dam_raw (count data.frame) so that my sample names would become rows instead of columns. Once I had this, I needed to remove the Gene Symbols and Counts. Below, I am adding the conditions to dr_description so that I can compare my samples based on their condition.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Annotate each sample with its condition</span></span>
 <span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>dr_description <span class="ot">&lt;-</span> dr_description <span class="sc">%&gt;%</span></span>
@@ -521,7 +523,7 @@ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 <span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirm all values are integers</span></span>
 <span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">all</span>(<span class="fu">apply</span>(filtered_dam_raw_int, <span class="dv">2</span>, <span class="cf">function</span>(x) <span class="fu">all</span>(x <span class="sc">==</span> <span class="fu">floor</span>(x)))))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Finally, I made sure my samples in my filtered_dam_raw_int matched the conditions/samples in my dr_description_clean.</p>
+<p>Finally, I made sure my samples in my filtered_dam_raw_int matched the conditions in my dr_description_clean.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Finalize metadata: align to count matrix</span></span>
 <span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>dr_description_clean <span class="ot">&lt;-</span> dr_description <span class="sc">%&gt;%</span></span>
@@ -639,7 +641,7 @@ colData names(2): Samples Condition</code></pre>
   for column names in R. [This is a message, not a warning or an error]</code></pre>
 </div>
 </div>
-<p>Now that we have run DESeq, we will begin comparing our groups and making our plots!</p>
+<p>Now that we have run DESeq, we will begin comparing our groups and making MA plots!</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Get results for a specific comparison, e.g., Old Homeostatic vs Young</span></span>
 <span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">results</span>(dds, <span class="at">contrast =</span> <span class="fu">c</span>(<span class="st">"Condition"</span>, <span class="st">"Old Homeostatic"</span>, <span class="st">"Young"</span>))</span>
@@ -705,7 +707,7 @@ Rxrg    1163.05        2.93516  0.266034   11.0330 2.64892e-28 6.08414e-25</code
 <span id="cb95-22"><a href="#cb95-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Mean Expression (log10 scale)"</span>,</span>
 <span id="cb95-23"><a href="#cb95-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Log2 Fold Change"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>For reference, a positive fold change is indicative of increased gene expression in the first group while a negative fold change is decreased gene expression. In the case above, a positive fold change means increased expression for the Old Homeostatic group while a negative fold change is decreased gene expression.</p>
+<p>For reference, a positive fold change is indicative of increased gene expression in the first group while a negative fold change is decreased gene expression. In the case above, a positive fold change means increased expression while a negative fold change is decreased gene expression for the Old Homeostatic group.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Get results for a specific comparison, e.g., Old Homeostatic vs Old Transition</span></span>
 <span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>res2 <span class="ot">&lt;-</span> <span class="fu">results</span>(dds, <span class="at">contrast =</span> <span class="fu">c</span>(<span class="st">"Condition"</span>, <span class="st">"Old Homeostatic"</span>, <span class="st">"Old Transition"</span>))</span>
@@ -998,7 +1000,7 @@ St14   4860.5571       -1.04384  0.102623  -10.1715 2.65647e-24 7.48958e-21</cod
 <span id="cb119-22"><a href="#cb119-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Mean Expression (log10 scale)"</span>,</span>
 <span id="cb119-23"><a href="#cb119-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Log2 Fold Change"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>At this point, we are repeating code.</p>
+<p>At this point, we are repeating code to view all comparisons.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Get results for a specific comparison, e.g., Old Homeostatic vs Old Diseased</span></span>
 <span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>res5 <span class="ot">&lt;-</span> <span class="fu">results</span>(dds, <span class="at">contrast =</span> <span class="fu">c</span>(<span class="st">"Condition"</span>, <span class="st">"Young"</span>, <span class="st">"Old Diseased"</span>))</span>
@@ -1099,7 +1101,7 @@ P2ry12 123103.12        1.41196 0.0703287   20.0766  1.18165e-89  3.00750e-86</c
 </section>
 <section id="assembling-ma-plots-up-and-down-regulated-genes" class="level3">
 <h3 class="anchored" data-anchor-id="assembling-ma-plots-up-and-down-regulated-genes">Assembling MA Plots: Up and Down-regulated Genes</h3>
-<p>Now, we want to have a nice picture with all of our plots together, so we will patch several of the graphs together and save it as an image.</p>
+<p>Now, we want to have a nice picture with all of our plots together, so we will patch several of the graphs and save it as an image.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Display all ggplots together</span></span>
 <span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"patchwork"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
