@@ -65,6 +65,8 @@ unique(filtered_dam_raw$`Gene Symbol`)
 head(filtered_dam_raw, 2)
 ```
 
+Here we are continuing to tidy the data.
+
 ```{r}
 ## Reshape data to long format
 dr_long <- filtered_dam_raw %>%
@@ -140,6 +142,8 @@ dds
 dds <- DESeq(dds)
 ```
 
+Now that we have run DESeq, we will begin comparing our groups and making our plots!
+
 ```{r}
 
 ## Get results for a specific comparison, e.g., Old Homeostatic vs Young
@@ -179,7 +183,7 @@ p1 <- ggplot(res_clean, aes(x = baseMean, y = log2FoldChange)) +
 
 ```
 
-A positive fold change
+For reference, a positive fold change is indicative of increased gene expression in the first group while a negative fold change is decreased gene expression. In the case above, a positive fold change means increased expression for the Old Homeostatic group while a negative fold change is decreased gene expression.
 
 ```{r}
 ## Get results for a specific comparison, e.g., Old Homeostatic vs Old Transition
@@ -257,6 +261,8 @@ p3 <- ggplot(res_clean3, aes(x = baseMean, y = log2FoldChange)) +
        y = "Log2 Fold Change")
 ```
 
+Continuing to plot different comparisons.
+
 ```{r}
 ## Get results for a specific comparison, e.g., Young vs Old Transition
 res4 <- results(dds, contrast = c("Condition", "Young", "Old Transition"))
@@ -294,6 +300,8 @@ p4 <- ggplot(res_clean4, aes(x = baseMean, y = log2FoldChange)) +
        x = "Mean Expression (log10 scale)",
        y = "Log2 Fold Change")
 ```
+
+At this point, we are repeating code.
 
 ```{r}
 ## Get results for a specific comparison, e.g., Old Homeostatic vs Old Diseased
@@ -333,20 +341,18 @@ p5 <- ggplot(res_clean5, aes(x = baseMean, y = log2FoldChange)) +
        y = "Log2 Fold Change")
 ```
 
+Now, we want to have a nice picture with all of our plots together, so we will patch several of the graphs together and save it as an image.
+
 ```{r}
 ## Display all ggplots together
 install.packages("patchwork")
 library(patchwork)
 
-
+## Saving patched variables as one 
  p25 <- p1 + p2 + p3 + p4 + p5
-```
-
-```{r}
-
+ 
 ## Saving plot
 p25
 
 ggsave("my_microglia_plot.png", plot = p25, width = 14, height = 9, dpi = 300)
-
 ```
