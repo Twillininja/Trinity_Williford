@@ -8,6 +8,8 @@ editor: visual
 
 Here, I am analyzing Bulk-RNAseq data that describes four different conditions. Of the four different conditions, we have eight samples of Young Homeostatic Microglia. Our other conditions are Old Microglia, but are three types: Homeostatic, Transition (Intermediate), and Disease Associated Microglia (DAMs).
 
+![](images/clipboard-173104672.png)
+
 ## Code
 
 ### Installing Packages
