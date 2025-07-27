@@ -148,7 +148,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#bulk-rnaseq-of-microglia-phenotypes-across-ages" id="toc-bulk-rnaseq-of-microglia-phenotypes-across-ages" class="nav-link active" data-scroll-target="#bulk-rnaseq-of-microglia-phenotypes-across-ages">Bulk-RNAseq of Microglia Phenotypes Across Ages</a></li>
-  <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a></li>
+  <li><a href="#code" id="toc-code" class="nav-link" data-scroll-target="#code">Code</a>
+  <ul class="collapse">
+  <li><a href="#installing-packages" id="toc-installing-packages" class="nav-link" data-scroll-target="#installing-packages">Installing Packages</a></li>
+  <li><a href="#tidy-data" id="toc-tidy-data" class="nav-link" data-scroll-target="#tidy-data">Tidy Data</a></li>
+  <li><a href="#deseq-analysis-and-plotting" id="toc-deseq-analysis-and-plotting" class="nav-link" data-scroll-target="#deseq-analysis-and-plotting">DESeq Analysis and Plotting</a></li>
+  <li><a href="#assembling-ma-plots-up-and-down-regulated-genes" id="toc-assembling-ma-plots-up-and-down-regulated-genes" class="nav-link" data-scroll-target="#assembling-ma-plots-up-and-down-regulated-genes">Assembling MA Plots: Up and Down-regulated Genes</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -180,6 +186,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="code" class="level2">
 <h2 class="anchored" data-anchor-id="code">Code</h2>
+<section id="installing-packages" class="level3">
+<h3 class="anchored" data-anchor-id="installing-packages">Installing Packages</h3>
 <p>We begin by installing the necessary packages needed for our data analysis.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## install packages and open library </span></span>
@@ -437,6 +445,9 @@ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 • `` -&gt; `...66`</code></pre>
 </div>
 </div>
+</section>
+<section id="tidy-data" class="level3">
+<h3 class="anchored" data-anchor-id="tidy-data">Tidy Data</h3>
 <p>After importing my data file, I needed to filter and tidy the data to contain the protein coding RNA segments. I also needed to remove the normalized counts since DESeq works solely with raw counts. On top of this, my descriptions in my csv did not contain any conditions that match my sample. DESeq compares samples based on conditions (not sample name), so I had to create a new data.frame to make my comparisons.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Filter gene expression data to protein-coding genes only</span></span>
@@ -6020,9 +6031,6 @@ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 #   `O3Transition(raw)` &lt;dbl&gt;, `O4Transition(raw)` &lt;dbl&gt;,
 #   `O5Transition(raw)` &lt;dbl&gt;, `O6Transition(raw)` &lt;dbl&gt;, …</code></pre>
 </div>
-</div>
-<p>Here we are continuing to tidy the data.</p>
-<div class="cell">
 <div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Reshape data to long format</span></span>
 <span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>dr_long <span class="ot">&lt;-</span> filtered_dam_raw <span class="sc">%&gt;%</span></span>
 <span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">33</span>, <span class="at">names_to =</span> <span class="st">"Samples"</span>, <span class="at">values_to =</span> <span class="st">"Count"</span>)</span>
@@ -6074,6 +6082,9 @@ Specify the column types or set `show_col_types = FALSE` to quiet this message.
 </div>
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>dr_description_clean <span class="ot">&lt;-</span> dr_description_clean[<span class="fu">colnames</span>(filtered_dam_raw_int), ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="deseq-analysis-and-plotting" class="level3">
+<h3 class="anchored" data-anchor-id="deseq-analysis-and-plotting">DESeq Analysis and Plotting</h3>
 <p>Now, with my data tidy, it is ready for differential expression analysis.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Create DESeq2 object</span></span>
@@ -6213,7 +6224,7 @@ Rxrg    1163.05        2.93516  0.266034   11.0330 2.64892e-28 6.08414e-25</code
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_project_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_project_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -6311,7 +6322,7 @@ S100a9 6956.1637        4.69965  0.449044   10.4659 1.23905e-25 3.23061e-22</cod
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_project_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_project_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -6408,7 +6419,7 @@ Cmtm6    47658.04       0.548049 0.0383383   14.2951 2.34772e-46 5.10042e-43</co
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_project_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_project_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -6506,7 +6517,7 @@ St14   4860.5571       -1.04384  0.102623  -10.1715 2.65647e-24 7.48958e-21</cod
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_project_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_project_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -6604,7 +6615,7 @@ P2ry12 123103.12        1.41196 0.0703287   20.0766  1.18165e-89  3.00750e-86</c
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_project_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_project_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -6632,6 +6643,9 @@ P2ry12 123103.12        1.41196 0.0703287   20.0766  1.18165e-89  3.00750e-86</c
 <span id="cb127-22"><a href="#cb127-22" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Mean Expression (log10 scale)"</span>,</span>
 <span id="cb127-23"><a href="#cb127-23" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">"Log2 Fold Change"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+<section id="assembling-ma-plots-up-and-down-regulated-genes" class="level3">
+<h3 class="anchored" data-anchor-id="assembling-ma-plots-up-and-down-regulated-genes">Assembling MA Plots: Up and Down-regulated Genes</h3>
 <p>Now, we want to have a nice picture with all of our plots together, so we will patch several of the graphs together and save it as an image.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Display all ggplots together</span></span>
@@ -6650,7 +6664,7 @@ P2ry12 123103.12        1.41196 0.0703287   20.0766  1.18165e-89  3.00750e-86</c
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="Final_project_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="Final_project_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -6658,6 +6672,7 @@ P2ry12 123103.12        1.41196 0.0703287   20.0766  1.18165e-89  3.00750e-86</c
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
