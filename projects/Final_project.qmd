@@ -43,6 +43,10 @@ dam <- readr::read_delim("DAMs-full-matrix.csv", delim = ",")
 
 After importing my data file, I needed to filter and tidy the data to contain the protein coding RNA segments. I also needed to remove the normalized counts since DESeq works solely with raw counts. On top of this, my descriptions in my csv did not contain any conditions that match my sample. DESeq compares samples based on conditions (not sample name), so I had to create a new data.frame to make my comparisons.
 
+![](images/Screenshot 2025-07-26 215608.png)
+
+![](images/Screenshot 2025-07-26 215721.png)
+
 ```{r}
 
 ## Filter gene expression data to protein-coding genes only
