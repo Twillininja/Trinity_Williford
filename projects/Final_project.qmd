@@ -14,6 +14,7 @@ We begin by installing the necessary packages needed for our data analysis.
 
 ```{r}
 ## install packages and open library 
+install.packages("BiocManager")
 BiocManager::install("DESeq2")
 install.packages("ggrepel")
 install.packages(c("parallelly", "purrr", "tidytext"))

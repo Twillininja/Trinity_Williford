@@ -3,7 +3,7 @@
     "path": "~/GitHub/Trinity_Williford/index.qmd",
     "project_path": "index.qmd",
     "type": "quarto_markdown",
-    "hash": "0",
+    "hash": "1097740495",
     "contents": "",
     "dirty": false,
     "created": 1752853949314.0,
@@ -12,15 +12,16 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "16,19",
-        "scrollLine": "0"
+        "cursorPosition": "25,334",
+        "scrollLine": "26",
+        "ignored_words": "inflammaging,Neuroimmunology,Etchegaray,Iker\n"
     },
     "folds": "",
-    "lastKnownWriteTime": 1753209751,
+    "lastKnownWriteTime": 1753582851,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1753209751673,
+    "last_content_update": 1753582851957,
     "read_only": false,
     "read_only_alternatives": []
 }

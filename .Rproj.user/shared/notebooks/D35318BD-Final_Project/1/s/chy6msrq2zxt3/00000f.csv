@@ -1,12 +1,21 @@
-"0","install.packages(c(""parallelly"", ""purrr"", ""tidytext""))
+"0","## install packages and open library 
+install.packages(""BiocManager"")
 "
-"1","Error in "
+"2","trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.5/BiocManager_1.30.26.zip'
+"
+"2","Content type 'application/zip'"
+"2"," length 507745 bytes (495 KB)
+"
+"2","downloaded 495 KB
+
+"
+"1","package ‘BiocManager’ successfully unpacked and MD5 sums checked
+"
+"1","
+"
 "1",""
-"1","install.packages"
-"1",""
-"1"," : "
-"1",""
-"1","Updating loaded packages"
+"1","The downloaded binary packages are in
+	C:\Users\willifordt\AppData\Local\Temp\Rtmpuqyy16\downloaded_packages"
 "1",""
 "1","
 "

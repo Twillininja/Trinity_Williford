@@ -3,7 +3,7 @@
     "path": "~/GitHub/Trinity_Williford/projects/Final_Project.qmd",
     "project_path": "projects/Final_Project.qmd",
     "type": "quarto_markdown",
-    "hash": "2911406775",
+    "hash": "1677631978",
     "contents": "",
     "dirty": false,
     "created": 1753579646529.0,
@@ -16,16 +16,16 @@
         "Source": "Source",
         "docOutlineVisible": "1",
         "rmdVisualCollapsedChunks": "",
-        "rmdVisualModeLocation": "607:320",
+        "rmdVisualModeLocation": "581:468.6666564941406",
         "cursorPosition": "14,0",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1753581417,
+    "lastKnownWriteTime": 1753581697,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1753581417613,
+    "last_content_update": 1753581697707,
     "read_only": false,
     "read_only_alternatives": []
 }
