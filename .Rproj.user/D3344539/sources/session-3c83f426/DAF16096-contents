@@ -10,6 +10,8 @@ Here, I am analyzing Bulk-RNAseq data that describes four different conditions. 
 
 ## Code
 
+### Installing Packages
+
 We begin by installing the necessary packages needed for our data analysis.
 
 ```{r}
@@ -35,6 +37,8 @@ file.exists("DAMs-full-matrix.csv")
 dam <- readr::read_delim("DAMs-full-matrix.csv", delim = ",")
 ```
 
+### Tidy Data
+
 After importing my data file, I needed to filter and tidy the data to contain the protein coding RNA segments. I also needed to remove the normalized counts since DESeq works solely with raw counts. On top of this, my descriptions in my csv did not contain any conditions that match my sample. DESeq compares samples based on conditions (not sample name), so I had to create a new data.frame to make my comparisons.
 
 ```{r}
@@ -53,11 +57,7 @@ dam_descriptions <- filtered_dam_gene[, -1:-66]
 ## Check for duplicate genes
 unique(filtered_dam_raw$`Gene Symbol`)
 head(filtered_dam_raw, 2)
-```
 
-Here we are continuing to tidy the data.
-
-```{r}
 ## Reshape data to long format
 dr_long <- filtered_dam_raw %>%
   pivot_longer(cols = 2:33, names_to = "Samples", values_to = "Count")
@@ -114,6 +114,8 @@ dr_description_clean <- dr_description %>%
 rownames(dr_description_clean) <- dr_description_clean$Samples
 dr_description_clean <- dr_description_clean[colnames(filtered_dam_raw_int), ]
 ```
+
+### DESeq Analysis and Plotting
 
 Now, with my data tidy, it is ready for differential expression analysis.
 
@@ -330,6 +332,8 @@ p5 <- ggplot(res_clean5, aes(x = baseMean, y = log2FoldChange)) +
        x = "Mean Expression (log10 scale)",
        y = "Log2 Fold Change")
 ```
+
+### Assembling MA Plots: Up and Down-regulated Genes
 
 Now, we want to have a nice picture with all of our plots together, so we will patch several of the graphs together and save it as an image.
 
