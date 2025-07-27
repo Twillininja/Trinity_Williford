@@ -4,13 +4,17 @@ format: html
 editor: visual
 ---
 
-## Bulk-RNAseq of Microglia Phenotypes Across Ages
+## Microglia: Homeostatic, Intermediate, and Disease Associated
 
-Here, I am analyzing Bulk-RNAseq data that describes four different conditions. Of the four different conditions, we have eight samples of Young Homeostatic Microglia. Our other conditions are Old Microglia, but are three types: Homeostatic, Transition (Intermediate), and Disease Associated Microglia (DAMs).
+Aging and neurodegenerative diseases, such as Alzheimer's Disease (AD), are associated with chronic, sterile inflammation (inflammaging). Microglia, the resident CNS immune cell, responds to insults by altering their phenotype and thus increasing their phagocytic and signaling capacities. However, it is unclear how this reactivity affects aging or AD pathogenesis. The prevailing view is that microgliosis protects against damage, but during aging and AD neuropathology, chronic microglial hyperactivation may promote inflammation and disease.
+
+In our studies, we have identified three types of microglia: homeostatic, intermediate, and disease-associated (DAMs). Homeostatic microglia are considered to maintain a healthy environment while DAMs are inflammatory. During aging, the proportion of DAMs relative to homeostatic and intermediate microglia changes. Here, we explore the genetic components that may contribute to these changes.
 
 ![](images/clipboard-173104672.png)
 
-## Code
+## Bulk-RNAseq of Microglia Phenotypes Across Ages
+
+Here, I am analyzing Bulk-RNAseq data that describes four different conditions: Young Homeostatic, Old Homeostatic, Old Transition (Intermediate), and Old DAMs.
 
 ### Installing Packages
 
@@ -41,11 +45,11 @@ dam <- readr::read_delim("DAMs-full-matrix.csv", delim = ",")
 
 ### Tidy Data
 
-After importing my data file, I needed to filter and tidy the data to contain the protein coding RNA segments. I also needed to remove the normalized counts since DESeq works solely with raw counts. On top of this, my descriptions in my csv did not contain any conditions that match my sample. DESeq compares samples based on conditions (not sample name), so I had to create a new data.frame to make my comparisons.
+After importing my data file, I needed to filter and tidy the data to contain the protein coding RNA segments. I also needed to remove the normalized counts since DESeq works solely with raw counts. On top of this, my descriptions (second image) in my csv did not contain any conditions (based on age and microglia state) that match my sample. DESeq compares samples based on conditions (not sample name), so I had to create a new data.frame to make my comparisons.
 
-![](images/Screenshot 2025-07-26 215608.png)
+![](images/Screenshot%202025-07-26%20215608.png)
 
-![](images/Screenshot 2025-07-26 215721.png)
+![](images/Screenshot%202025-07-26%20215721.png)
 
 ```{r}
 
@@ -84,7 +88,7 @@ filtered_dam_raw <- filtered_dam_raw %>%
   column_to_rownames(var = "Gene Symbol")
 ```
 
-Here is a continuation of tidying my description code. Quick recap of my code, I elongated my data.frame (filtered_dam_raw) so that my sample names would become rows instead of columns. Once I had this, I needed to remove the Gene Symbols and Counts so that DESeq would not get confused. Below, I am adding the conditions for each sample so that my comparisons across cell types can be made.
+Here is a continuation of tidying dr_description. For recap, I elongated filtered_dam_raw (count data.frame) so that my sample names would become rows instead of columns. Once I had this, I needed to remove the Gene Symbols and Counts. Below, I am adding the conditions to dr_description so that I can compare my samples based on their condition.
 
 ```{r}
 ## Annotate each sample with its condition
@@ -108,7 +112,7 @@ filtered_dam_raw_int <- round(filtered_dam_raw)
 stopifnot(all(apply(filtered_dam_raw_int, 2, function(x) all(x == floor(x)))))
 ```
 
-Finally, I made sure my samples in my filtered_dam_raw_int matched the conditions/samples in my dr_description_clean.
+Finally, I made sure my samples in my filtered_dam_raw_int matched the conditions in my dr_description_clean.
 
 ```{r}
 ## Finalize metadata: align to count matrix
@@ -140,7 +144,7 @@ dds
 dds <- DESeq(dds)
 ```
 
-Now that we have run DESeq, we will begin comparing our groups and making our plots!
+Now that we have run DESeq, we will begin comparing our groups and making MA plots!
 
 ```{r}
 
@@ -181,7 +185,7 @@ p1 <- ggplot(res_clean, aes(x = baseMean, y = log2FoldChange)) +
 
 ```
 
-For reference, a positive fold change is indicative of increased gene expression in the first group while a negative fold change is decreased gene expression. In the case above, a positive fold change means increased expression for the Old Homeostatic group while a negative fold change is decreased gene expression.
+For reference, a positive fold change is indicative of increased gene expression in the first group while a negative fold change is decreased gene expression. In the case above, a positive fold change means increased expression while a negative fold change is decreased gene expression for the Old Homeostatic group.
 
 ```{r}
 ## Get results for a specific comparison, e.g., Old Homeostatic vs Old Transition
@@ -299,7 +303,7 @@ p4 <- ggplot(res_clean4, aes(x = baseMean, y = log2FoldChange)) +
        y = "Log2 Fold Change")
 ```
 
-At this point, we are repeating code.
+At this point, we are repeating code to view all comparisons.
 
 ```{r}
 ## Get results for a specific comparison, e.g., Old Homeostatic vs Old Diseased
@@ -341,7 +345,7 @@ p5 <- ggplot(res_clean5, aes(x = baseMean, y = log2FoldChange)) +
 
 ### Assembling MA Plots: Up and Down-regulated Genes
 
-Now, we want to have a nice picture with all of our plots together, so we will patch several of the graphs together and save it as an image.
+Now, we want to have a nice picture with all of our plots together, so we will patch several of the graphs and save it as an image.
 
 ```{r}
 ## Display all ggplots together
