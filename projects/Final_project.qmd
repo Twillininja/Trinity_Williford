@@ -1,5 +1,336 @@
 ---
-title: "Final Project"
+title: "Final_Project"
+format: html
+editor: visual
 ---
 
-About this site
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+```{r}
+## install packages and open library 
+BiocManager::install("DESeq2")
+install.packages("ggrepel")
+
+## Load packages for data analysis
+library(dplyr)
+library(tidyr)
+library(DESeq2)
+library(tibble)
+library(tidyverse)
+library(ggrepel)
+
+## Make sure you can find your file
+file.exists("DAMs-full-matrix.csv")
+
+## read csv formatted data
+dam <- readr::read_delim("DAMs-full-matrix.csv", delim = ",")
+```
+
+After importing my data file, I needed to filter and tidy the data to contain the protein coding RNA segments. I also needed to remove the normalized counts since DESeq works solely with raw counts. On top of this, my descriptions in my csv did not contain any conditions that match my sample. DESeq compares samples based on conditions (not sample name), so I had to create a new data.frame to make my comparisons.
+
+```{r}
+
+## Filter gene expression data to protein-coding genes only
+filtered_dam_gene <- dam %>%
+  filter(`Gene Type` == "protein-coding")
+
+## Extract raw counts only (remove normalized columns)
+filtered_dam_raw <- filtered_dam_gene[, -34:-77]
+
+## Extract gene annotation info (e.g. gene type, description)
+dam_descriptions <- filtered_dam_gene[, -1:-66]
+
+
+## Check for duplicate genes
+unique(filtered_dam_raw$`Gene Symbol`)
+head(filtered_dam_raw, 2)
+```
+
+```{r}
+## Reshape data to long format
+dr_long <- filtered_dam_raw %>%
+  pivot_longer(cols = 2:33, names_to = "Samples", values_to = "Count")
+
+## Create sample metadata frame (One row per sample)
+dr_description <- dr_long %>%
+  select(Samples) %>%
+  distinct()  
+```
+
+On top of filtering and creating a new data.frame, I double checked to see if I had unique genes or not. The goal is to have unique expression to limit DESeq package confusion during data analysis.
+
+```{r}
+## Collapse duplicate genes by summing counts
+filtered_dam_raw <- filtered_dam_raw %>%
+  group_by(`Gene Symbol`) %>%
+  summarise(across(everything(), sum), .groups = "drop") %>%
+  column_to_rownames(var = "Gene Symbol")
+```
+
+Here is a continuation of tidying my description code. Quick recap of my code, I elongated my data.frame (filtered_dam_raw) so that my sample names would become rows instead of columns. Once I had this, I needed to remove the Gene Symbols and Counts so that DESeq would not get confused. Below, I am adding the conditions for each sample so that my comparisons across cell types can be made.
+
+```{r}
+## Annotate each sample with its condition
+dr_description <- dr_description %>%
+  mutate(Condition = case_when(
+    Samples %in% paste0("Y", 1:8, "Homeo(raw)") ~ "Young",
+    Samples %in% paste0("O", 1:8, "Homeo(raw)") ~ "Old Homeostatic",
+    Samples %in% paste0("O", 1:8, "Transition(raw)") ~ "Old Transition",
+    Samples %in% paste0("O", 1:8, "DAM(raw)") ~ "Old Diseased",
+    TRUE ~ NA_character_
+  ))
+```
+
+Unfortunately, DESeq must have whole numbers. My data has decimals, so I had the data rounded and created a new data.frame for differential expression.
+
+```{r}
+## Convert counts to integers (rounding)
+filtered_dam_raw_int <- round(filtered_dam_raw)
+
+# Confirm all values are integers
+stopifnot(all(apply(filtered_dam_raw_int, 2, function(x) all(x == floor(x)))))
+```
+
+Finally, I made sure my samples in my filtered_dam_raw_int matched the conditions/samples in my dr_description_clean.
+
+```{r}
+## Finalize metadata: align to count matrix
+dr_description_clean <- dr_description %>%
+  filter(Samples %in% colnames(filtered_dam_raw_int)) %>%
+  distinct(Samples, .keep_all = TRUE)
+
+# Set rownames and reorder to match count matrix columns
+rownames(dr_description_clean) <- dr_description_clean$Samples
+dr_description_clean <- dr_description_clean[colnames(filtered_dam_raw_int), ]
+```
+
+Now, with my data tidy, it is ready for differential expression analysis.
+
+```{r}
+## Create DESeq2 object
+dds <- DESeqDataSetFromMatrix(
+  countData = filtered_dam_raw_int,
+  colData = dr_description_clean,
+  design = ~ Condition
+)
+
+dds
+
+## Run DESeq
+dds <- DESeq(dds)
+```
+
+```{r}
+
+## Get results for a specific comparison, e.g., Old Homeostatic vs Young
+res <- results(dds, contrast = c("Condition", "Old Homeostatic", "Young"))
+
+## View summary and top results
+summary(res)
+head(res[order(res$padj), ])
+
+## Plot MA plot
+plotMA(res, main = "DESeq2: Old Homeostatic vs Young", ylim = c(-5, 5))
+
+## Remove NA adjusted p-values and Sort for up- and down-regulated genes
+res_clean <- as.data.frame(res)
+res_clean$gene <- rownames(res_clean)
+res_clean <- res_clean[!is.na(res_clean$padj), ]
+
+top_up <- head(res_clean[order(-res_clean$log2FoldChange), ], 5)
+top_down <- head(res_clean[order(res_clean$log2FoldChange), ], 5)
+
+top_genes <- rbind(top_up, top_down)
+
+p1 <- ggplot(res_clean, aes(x = baseMean, y = log2FoldChange)) +
+  geom_point(alpha = 0.4, size = 1, color = "gray") +
+  geom_point(data = top_genes, aes(x = baseMean, y = log2FoldChange), color = "purple", size = 2) +
+  geom_text_repel(data = top_genes, aes(label = gene),
+                  size = 3, color = "black", max.overlaps = Inf) +
+  scale_x_log10() +
+  theme_minimal() +
+  labs(title = "Old Homeostatic vs Young",
+       x = "Mean Expression (log10 scale)",
+       y = "Log2 Fold Change")
+
+
+```
+
+A positive fold change
+
+```{r}
+## Get results for a specific comparison, e.g., Old Homeostatic vs Old Transition
+res2 <- results(dds, contrast = c("Condition", "Old Homeostatic", "Old Transition"))
+
+res2
+
+## View summary and top results
+summary(res2)
+head(res2[order(res2$padj), ])
+
+## Plot MA plot
+plotMA(res2, main = "DESeq2: Old Homeostatic vs Old Transition", ylim = c(-5, 5))
+
+## Remove NA adjusted p-values and Sort for up- and down-regulated genes
+res_clean2 <- as.data.frame(res2)
+res_clean2$gene <- rownames(res_clean2)
+res_clean2 <- res_clean2[!is.na(res_clean2$padj), ]
+
+top_up2 <- head(res_clean2[order(-res_clean2$log2FoldChange), ], 5)
+top_down2 <- head(res_clean2[order(res_clean2$log2FoldChange), ], 5)
+
+top_genes2 <- rbind(top_up2, top_down2)
+
+p2 <- ggplot(res_clean2, aes(x = baseMean, y = log2FoldChange)) +
+  geom_point(alpha = 0.4, size = 1, color = "gray") +
+  geom_point(data = top_genes, aes(x = baseMean, y = log2FoldChange), color = "purple", size = 2) +
+  geom_text_repel(data = top_genes2, aes(label = gene),
+                  size = 3, color = "black", max.overlaps = Inf) +
+  scale_x_log10() +
+  theme_minimal() +
+  labs(title = "Old Homeostatic vs Old Transition",
+       x = "Mean Expression (log10 scale)",
+       y = "Log2 Fold Change")
+```
+
+```{r}
+## Get results for a specific comparison, e.g., Old Homeostatic vs Old Diseased
+res3 <- results(dds, contrast = c("Condition", "Old Homeostatic", "Old Diseased"))
+
+res3
+
+## View summary and top results
+summary(res3)
+head(res3[order(res3$padj), ])
+
+## Plot MA plot
+plotMA(res3, main = "DESeq2: Old Homeostatic vs Old Diseased", ylim = c(-5, 5))
+
+## Remove NA adjusted p-values and Sort for up- and down-regulated genes
+res_clean3 <- as.data.frame(res3)
+res_clean3$gene <- rownames(res_clean3)
+res_clean3 <- res_clean3[!is.na(res_clean3$padj), ]
+
+top_up3 <- head(res_clean3[order(-res_clean3$log2FoldChange), ], 5)
+top_down3 <- head(res_clean3[order(res_clean3$log2FoldChange), ], 5)
+
+top_genes3 <- rbind(top_up3, top_down3)
+
+p3 <- ggplot(res_clean3, aes(x = baseMean, y = log2FoldChange)) +
+  geom_point(alpha = 0.4, size = 1, color = "gray") +
+  geom_point(data = top_genes3, aes(x = baseMean, y = log2FoldChange), color = "purple", size = 2) +
+  geom_text_repel(data = top_genes3, aes(label = gene),
+                  size = 3, color = "black", max.overlaps = Inf) +
+  scale_x_log10() +
+  theme_minimal() +
+  labs(title = "Old Homeostatic vs Old DAMs",
+       x = "Mean Expression (log10 scale)",
+       y = "Log2 Fold Change")
+```
+
+```{r}
+## Get results for a specific comparison, e.g., Young vs Old Transition
+res4 <- results(dds, contrast = c("Condition", "Young", "Old Transition"))
+
+res4
+
+## View summary and top results
+summary(res4)
+head(res4[order(res4$padj), ])
+
+## Plot MA plot
+plotMA(res4, main = "DESeq2: Young vs Old Transition", ylim = c(-5, 5))
+
+## Remove NA adjusted p-values and Sort for up- and down-regulated genes
+res_clean4 <- as.data.frame(res4)
+res_clean4$gene <- rownames(res_clean4)
+res_clean4 <- res_clean4[!is.na(res_clean4$padj), ]
+
+top_up4 <- head(res_clean4[order(-res_clean4$log2FoldChange), ], 5)
+top_down4 <- head(res_clean4[order(res_clean4$log2FoldChange), ], 5)
+
+top_genes4 <- rbind(top_up4, top_down4)
+
+p4 <- ggplot(res_clean4, aes(x = baseMean, y = log2FoldChange)) +
+  geom_point(alpha = 0.4, size = 1, color = "gray") +
+  geom_point(data = top_genes4, aes(x = baseMean, y = log2FoldChange), color = "purple", size = 2) +
+  geom_text_repel(data = top_genes4, aes(label = gene),
+                  size = 3, color = "black", max.overlaps = Inf) +
+  scale_x_log10() +
+  theme_minimal() +
+  labs(title = "Young vs Old Transition",
+       x = "Mean Expression (log10 scale)",
+       y = "Log2 Fold Change")
+```
+
+```{r}
+## Get results for a specific comparison, e.g., Old Homeostatic vs Old Diseased
+res5 <- results(dds, contrast = c("Condition", "Young", "Old Diseased"))
+
+res5
+
+## View summary and top results
+summary(res5)
+head(res5[order(res5$padj), ])
+
+## Plot MA plot
+plotMA(res5, main = "DESeq2: Young vs Old DAMs", ylim = c(-5, 5))
+
+## Remove NA adjusted p-values and Sort for up- and down-regulated genes
+res_clean5 <- as.data.frame(res5)
+res_clean5$gene <- rownames(res_clean5)
+res_clean5 <- res_clean5[!is.na(res_clean5$padj), ]
+
+top_up5 <- head(res_clean5[order(-res_clean5$log2FoldChange), ], 5)
+top_down5 <- head(res_clean5[order(res_clean5$log2FoldChange), ], 5)
+
+top_genes5 <- rbind(top_up5, top_down5)
+
+p5 <- ggplot(res_clean5, aes(x = baseMean, y = log2FoldChange)) +
+  geom_point(alpha = 0.4, size = 1, color = "gray") +
+  geom_point(data = top_genes4, aes(x = baseMean, y = log2FoldChange), color = "purple", size = 2) +
+  geom_text_repel(data = top_genes5, aes(label = gene),
+                  size = 3, color = "black", max.overlaps = Inf) +
+  scale_x_log10() +
+  theme_minimal() +
+  labs(title = "Young vs Old DAMs",
+       x = "Mean Expression (log10 scale)",
+       y = "Log2 Fold Change")
+```
+
+```{r}
+## Display all ggplots together
+install.packages("patchwork")
+library(patchwork)
+
+
+ p25 <- p1 + p2 + p3 + p4 + p5
+```
+
+```{r}
+
+## Saving plot
+p25
+
+ggsave("my_microglia_plot.png", plot = p25, width = 14, height = 9, dpi = 300)
+
+```
