@@ -61,7 +61,7 @@ dam_descriptions <- filtered_dam_gene[, -1:-66]
 
 
 ## Check for duplicate genes
-unique(filtered_dam_raw$`Gene Symbol`)
+any(duplicated('Gene Symbol')) == FALSE
 head(filtered_dam_raw, 2)
 
 ## Reshape data to long format

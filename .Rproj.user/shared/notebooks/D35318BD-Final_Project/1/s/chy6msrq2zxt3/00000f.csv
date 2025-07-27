@@ -1,6 +1,5 @@
-"0","## install packages and open library 
-install.packages(""BiocManager"")
-"
+"0","## install packages and open library "
+"0","install.packages(""BiocManager"")"
 "2","trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.5/BiocManager_1.30.26.zip'
 "
 "2","Content type 'application/zip'"
@@ -19,3 +18,60 @@ install.packages(""BiocManager"")
 "1",""
 "1","
 "
+"0","BiocManager::install(""DESeq2"")"
+"0","install.packages(""ggrepel"")"
+"2","trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.5/ggrepel_0.9.6.zip'
+"
+"2","Content type 'application/zip'"
+"2"," length 617028 bytes (602 KB)
+"
+"2","downloaded 602 KB
+
+"
+"1","package ‘ggrepel’ successfully unpacked and MD5 sums checked
+"
+"1","
+"
+"1",""
+"1","The downloaded binary packages are in
+	C:\Users\willifordt\AppData\Local\Temp\Rtmpuqyy16\downloaded_packages"
+"1",""
+"1","
+"
+"0","install.packages(c(""parallelly"", ""purrr"", ""tidytext""))"
+"2","trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.5/parallelly_1.45.1.zip'
+"
+"2","trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.5/purrr_1.1.0.zip'
+"
+"2","trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.5/tidytext_0.4.3.zip'
+"
+"1","package ‘parallelly’ successfully unpacked and MD5 sums checked
+"
+"1","package ‘purrr’ successfully unpacked and MD5 sums checked
+"
+"1","package ‘tidytext’ successfully unpacked and MD5 sums checked
+"
+"1","
+"
+"1",""
+"1","The downloaded binary packages are in
+	C:\Users\willifordt\AppData\Local\Temp\Rtmpuqyy16\downloaded_packages"
+"1",""
+"1","
+"
+"0","## Load packages for data analysis"
+"0","library(DESeq2)"
+"0","library(dplyr)"
+"0","library(tidyr)"
+"0","library(tibble)"
+"0","library(tidyverse)"
+"0","library(ggrepel)"
+"0",""
+"0","## Make sure you can find your file"
+"0","file.exists(""DAMs-full-matrix.csv"")"
+"1","[1]"
+"1"," TRUE"
+"1","
+"
+"0","## read csv formatted data"
+"0","dam <- readr::read_delim(""DAMs-full-matrix.csv"", delim = "","")"
