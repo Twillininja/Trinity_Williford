@@ -4,36 +4,25 @@ format: html
 editor: visual
 ---
 
-## Quarto
+## Bulk-RNAseq of Microglia Phenotypes Across Ages
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+Here, I am analyzing Bulk-RNAseq data that describes four different conditions. Of the four different conditions, we have eight samples of Young Homeostatic Microglia. Our other conditions are Old Microglia, but are three types: Homeostatic, Transition (Intermediate), and Disease Associated Microglia (DAMs).
 
-## Running Code
+## Code
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
-```{r}
-1 + 1
-```
-
-You can add options to executable code like this
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
+We begin by installing the necessary packages needed for our data analysis.
 
 ```{r}
 ## install packages and open library 
 BiocManager::install("DESeq2")
 install.packages("ggrepel")
+install.packages(c("parallelly", "purrr", "tidytext"))
+
 
 ## Load packages for data analysis
+library(DESeq2)
 library(dplyr)
 library(tidyr)
-library(DESeq2)
 library(tibble)
 library(tidyverse)
 library(ggrepel)
